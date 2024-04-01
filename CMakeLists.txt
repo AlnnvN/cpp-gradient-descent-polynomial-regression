@@ -10,6 +10,11 @@ project(gradient_descent VERSION 1.0
                 DESCRIPTION ""
                 LANGUAGES CXX)
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+set(CMAKE_BUILD_TYPE Debug)
+
 add_library(gradient_descent gradient_descent.hpp gradient_descent.cpp)
 
 add_executable(demo demo.cpp)
