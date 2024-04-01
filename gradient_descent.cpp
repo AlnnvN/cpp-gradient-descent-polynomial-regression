@@ -8,10 +8,11 @@ std::vector<double> GradientDescent::run(const std::vector<double> &dataX, const
 
     for (int i = 0; i < epochs; i++)
     {
-        GradientDescent::lossFunction(dataX, dataY, &loss, degree, batchSize);
+        GradientDescent::lossFunction(dataX, dataY, currentCoefficients, &loss, degree, batchSize);
         for (int j = 0; j < degree; j++)
         {
             stepSize = loss[j] * learningRate;
+            loss[j] = 0.0;
             currentCoefficients[j] = currentCoefficients[j] - stepSize;
         }
     }
@@ -19,16 +20,45 @@ std::vector<double> GradientDescent::run(const std::vector<double> &dataX, const
     return currentCoefficients;
 }
 
-void GradientDescent::lossFunction(const std::vector<double> &dataX, const std::vector<double> &dataY, std::vector<double> *lossResult, const int &degree, const int &batchSize)
+void GradientDescent::lossFunction(const std::vector<double> &dataX, const std::vector<double> &dataY, const std::vector<double> &currentCoefficients, std::vector<double> *lossResult, const int &degree, const int &batchSize)
 {
-    double sumOfSquaredResiduals{};
+    /*
+        Sum of squared residuals = sum(y_expected - y_prediction)²
+                                 = sum(y_expected - (a_i * x^n))²
+
+        d(SSR)/d(a_i) = sum -2x^n(a_i * x^n) -> partial derivative for every coefficient
+    */
+
+    double squaredResidual{};
 
     int dataSize = dataX.size();
 
-    for (int i = 0; i < batchSize; i++)
+    double chainRule{};
+
+    double x{};
+
+    double y{};
+
+    // batch descent
+    if(batchSize == dataSize)
     {
-        //take random samples.
+        for (int i = 0; i < dataSize; i++)
+        {
+            x = dataX[i];
+            y = dataY[i];
+
+            chainRule = 0.0;
+            for (int j = 0; j < degree; j++)
+            {
+                chainRule += std::pow(x, j) * currentCoefficients[j];
+            }
+            chainRule = y - chainRule;
+
+            for (int j = 0; j < degree; j++)
+            {
+                squaredResidual = -2 * std::pow(x, j) * chainRule;
+                (*lossResult)[j] += squaredResidual;
+            }
+        }
     }
-    
-    return 0.0;
 }

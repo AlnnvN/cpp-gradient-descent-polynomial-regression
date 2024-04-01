@@ -3,6 +3,7 @@
 #include <vector>
 #include <array>
 #include <functional>
+#include <math.h>
 
 class GradientDescent
 {
@@ -11,5 +12,5 @@ public:
 
 private:
 
-    static void lossFunction(const std::vector<double> &dataX, const std::vector<double> &dataY, std::vector<double> *lossResult, const int &degree, const int &batchSize);
+    static void lossFunction(const std::vector<double> &dataX, const std::vector<double> &dataY ,const std::vector<double> &currentCoefficients, std::vector<double> *lossResult, const int &degree, const int &batchSize);
 };
